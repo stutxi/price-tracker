@@ -31,7 +31,7 @@ export async function scrapeAndStoreProduct(productUrl: string) {
                 { price: scrapedProduct.currentPrice }
             ]
 
-            product = {
+            const product = {
                 ...scrapedProduct,
                 priceHistory: updatedPriceHistory,
                 lowestPrice: getLowestPrice(updatedPriceHistory),
