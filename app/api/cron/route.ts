@@ -5,13 +5,18 @@ import { scrapeAmazonProduct } from "@/lib/scraper";
 import { getAveragePrice, getEmailNotifType, getHighestPrice, getLowestPrice } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
+
+export const maxDuration = 300; // This function can run for a maximum of 300 seconds
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
  export async function GET(request: Request) {
     try {
-        await connectDB();
+        connectDB();
 
         const products = await Product.find({});
 
-        if (!products) throw new Error('No Products Found');
+        if (!products) throw new Error('No Products Fetched');
 
         // 1. Scrape latest product details and update db
         const updatedProducts = await Promise.all(
@@ -20,7 +25,7 @@ import { NextResponse } from "next/server";
                 const scrapedProduct = await scrapeAmazonProduct(currentProduct.url);
                 if (!scrapedProduct) return;
 
-                const updatedPriceHistory: any = [
+                const updatedPriceHistory = [
                     ...currentProduct.priceHistory,
                     { 
                         price: scrapedProduct.currentPrice,
@@ -32,7 +37,7 @@ import { NextResponse } from "next/server";
                     priceHistory: updatedPriceHistory,
                     lowestPrice: getLowestPrice(updatedPriceHistory),
                     highestPrice: getHighestPrice(updatedPriceHistory),
-                    averagePrice: getAveragePrice(updatedPriceHistory)
+                    averagePrice: getAveragePrice(updatedPriceHistory),
                 };
                 
                 // Update Products in DB
@@ -40,7 +45,7 @@ import { NextResponse } from "next/server";
                     {
                         url: product.url,
                     },
-                    product,
+                    product
                 );
 
                 // check each product status and send email accordingly

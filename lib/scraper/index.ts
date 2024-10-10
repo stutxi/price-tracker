@@ -78,14 +78,14 @@ export async function scrapeAmazonProduct(url: string) {
             category: category,
             reviewsCount: Number(reviewsCount.replace(/[^0-9]/g, '')),
             stars: Number(stars),
-            // catergory: 'category',
+            catergory: 'category',
             // reviewsCount: 0,
             // stars: 4,
             isOutOfStock: outOfStock,
             description: description,
             lowestPrice: Number(currentPrice) || Number(originalPrice),
             highestPrice: Number(originalPrice) || Number(currentPrice),
-            average: Number(currentPrice) || Number(originalPrice)
+            averagePrice: Number(currentPrice) || Number(originalPrice)
         };
 
         // console.log(data);
